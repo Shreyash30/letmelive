@@ -19,14 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Fetch and Normalize Data
     async function loadData() {
         try {
-            // Fetch both JSONs in parallel
-            const [trustifiedRes, unboxRes] = await Promise.all([
+            // Fetch all 3 JSONs in parallel
+            const [trustifiedRes, unboxRes, openRes] = await Promise.all([
                 fetch('trustified_data.json'),
-                fetch('unbox_data.json')
+                fetch('unbox_data.json'),
+                fetch('open_data.json')
             ]);
 
             const trustifiedData = await trustifiedRes.json();
             const unboxData = await unboxRes.json();
+            const openData = await openRes.json();
 
             // Normalize Trustified
             const trustifiedNormalized = normalizeTrustified(trustifiedData);
@@ -34,8 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Normalize Unbox
             const unboxNormalized = normalizeUnbox(unboxData);
 
+            // Normalize Open Data
+            const openNormalized = normalizeOpenData(openData);
+
             // Combine
-            allProducts = [...trustifiedNormalized, ...unboxNormalized];
+            allProducts = [...trustifiedNormalized, ...unboxNormalized, ...openNormalized];
 
             // Initial Render
             updateStats();
@@ -43,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Data load failed:", error);
-            resultsGrid.innerHTML = `<div class="loading-state" style="color:var(--neon-red)">Failed to load database uplink. Check console.</div>`;
+            resultsGrid.innerHTML = `<div class="loading-state" style="color:var(--neon-red)">Failed to load database. Check console.</div>`;
         }
     }
 
@@ -136,6 +141,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         source: 'UnboxHealth',
                         category: cleanCategory,
                         status: 'fail',
+                        link: p.link
+                    });
+                });
+            }
+        }
+        return products;
+    }
+
+    // Normalization Logic: Open Data (TWT)
+    function normalizeOpenData(data) {
+        let products = [];
+        // Structure is simple: { category: { pass: [] } }
+        for (const [category, lists] of Object.entries(data)) {
+            if (lists.pass) {
+                lists.pass.forEach(p => {
+                    products.push({
+                        name: p.name,
+                        source: p.source,
+                        category: category,
+                        status: 'pass',
                         link: p.link
                     });
                 });

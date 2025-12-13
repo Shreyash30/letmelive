@@ -20,3 +20,36 @@ We aggregate **factual data** (Brand Name, Pass/Fail Status, Batch Number) from 
 * **Trustified** (Supplements & Health Foods)
 * **Unbox Health** (Packaged Foods)
 * **The Liver Doc** (Herbal & Ayurvedic Safety)
+
+## 🤝 How to Contribute
+
+We believe in **Open Data**. If you have found a verified lab report that isn't listed, you can contribute directly by adding it to `open_data.json`.
+
+### Contribution Schema
+Please follow this JSON structure when adding new products:
+
+```json
+{
+  "category_name": {
+    "pass": [
+      {
+        "name": "Brand Name - Product Name",
+        "link": "https://link-to-public-lab-report.com",
+        "source": "Lab Name / Organization"
+      }
+    ],
+    "fail": [{
+        "name": "Brand Name - Product Name",
+        "link": "https://link-to-public-lab-report.com",
+        "source": "Lab Name / Organization"
+      }],
+    "not_healthy": []
+  }
+}
+```
+
+### Rules for Contribution
+1.  **Source Required:** You must include a direct link to the lab report or study. entries without links will be rejected.
+2.  **No Hearsay:** Do not add data based on "news articles" or "influencer opinions" unless they contain a downloadable lab PDF.
+3.  **Neutral Naming:** proper casing for Brand and Product names.
+4.  **Categories:** Use existing categories (e.g., `protein`, `supplements`, `packaged`) where possible.
